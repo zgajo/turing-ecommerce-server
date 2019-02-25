@@ -1,0 +1,19 @@
+type Department {
+	department_id: ID!
+	name: String!
+	description: String
+	categories: [Category!]!
+}
+
+type Category {
+	category_id: ID!
+	name: String!
+	description: String
+	department_id: ID!
+	department: Department!
+}
+
+type Query {
+	departments: [Department!]!
+	categories: [Category!]!
+}
