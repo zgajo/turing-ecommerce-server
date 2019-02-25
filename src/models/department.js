@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
 	const Department = sequelize.define('department', {
-		department_id: { autoIncrement: true, primaryKey: true, type: DataTypes.INTEGER },
-		description: DataTypes.TEXT,
-		name: DataTypes.STRING,
+		department_id: { allowNull: false, autoIncrement: true, primaryKey: true, type: DataTypes.INTEGER },
+		description: DataTypes.STRING(1000),
+		name: { allowNull: false, type: DataTypes.STRING(100) },
 	});
 
 	Department.associate = models => {
