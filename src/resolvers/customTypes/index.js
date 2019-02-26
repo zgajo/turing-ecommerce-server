@@ -1,12 +1,12 @@
 const { GraphQLScalarType } = require('graphql');
 const { formatDate } = require('../../utils/globals');
 
+// TODO: use Dataloader for batching
 module.exports = {
 	Attribute: {
 		attribute_values: async ({ attribute_id }, _, { models }) =>
 			await models.AttributeValue.findAll({ where: { attribute_id } }),
 	},
-
 	AttributeValue: {
 		attribute: async ({ attribute_id }, _, { models }) => await models.Attribute.findOne({ where: { attribute_id } }),
 		product_attribute_values: async ({ attribute_value_id }, _, { models }) =>

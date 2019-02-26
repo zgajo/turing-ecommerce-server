@@ -4,6 +4,7 @@ const basename = path.basename(__filename);
 const { capitalize } = require('../utils/globals');
 const Sequelize = require('sequelize');
 
+// TODO: Use Redis for catching, store into redis on Sequelize hooks
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
 	define: {
 		// disable the modification of tablenames; By default, sequelize will automatically
@@ -18,10 +19,6 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
 	operatorsAliases: Sequelize.Op, // to ger rid of Sequelize depricate error message
 });
 
-// const models = {
-// 	Category: sequelize.import('./category'),
-// 	Department: sequelize.import('./department'),
-// };
 const models = {};
 fs.readdirSync(__dirname)
 	.filter(file => {
