@@ -30,7 +30,8 @@ fs.readdirSync(__dirname)
 	.forEach(file => {
 		const model = sequelize['import'](path.join(__dirname, file));
 		let modelName = model.name;
-		models[capitalize(modelName)] = model;
+		modelName = capitalize(modelName);
+		models[modelName] = model;
 	});
 
 Object.keys(models).forEach(modelName => {

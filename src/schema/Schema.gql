@@ -11,6 +11,7 @@ type Category {
 	description: String
 	department_id: ID!
 	department: Department!
+	products: [Product!]!
 }
 
 type Product {
@@ -23,6 +24,7 @@ type Product {
 	image_2: String
 	thumbnail: String
 	display: Int!
+	categories: [Category!]!
 }
 
 type Query {
