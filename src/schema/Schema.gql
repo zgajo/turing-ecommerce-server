@@ -28,6 +28,8 @@ type Product {
 	display: Int!
 	categories: [Category!]!
 	product_attribute_values: [AttributeValue!]!
+	order_details: [OrderDetail!]!
+	reviews: [Review!]!
 }
 
 type Attribute {
@@ -41,6 +43,7 @@ type AttributeValue {
 	attribute_id: ID!
 	attribute: Attribute!
 	value: String!
+	product_attribute_values: [Product!]!
 }
 
 type ShoppingCart {
@@ -65,6 +68,8 @@ type Order {
 	reference: String!
 	shipping_id: ID!
 	tax_id: ID!
+	audits: [Audit!]!
+	order_details: [OrderDetail!]!
 }
 
 type OrderDetail {
@@ -75,11 +80,15 @@ type OrderDetail {
 	product_name: String!
 	quantity: Int!
 	unit_cost: Float!
+	order: Order!
+	product: Product!
 }
 
 type ShippingRegion {
 	shipping_region_id: ID!
 	shipping_region: String!
+	customers: [Customer!]!
+	shippings: [Shipping!]!
 }
 
 type Customer {
@@ -98,6 +107,9 @@ type Customer {
 	day_phone: String
 	eve_phone: String
 	mob_phone: String
+	orders: [Order!]!
+	reviews: [Review!]!
+	shipping_region: ShippingRegion!
 }
 
 type Shipping {
@@ -105,12 +117,33 @@ type Shipping {
 	shipping_type: String!
 	shipping_cost: Float!
 	shipping_region_id: ID!
+	shipping_region: ShippingRegion!
 }
 
 type Tax {
 	tax_id: ID!
 	tax_type: String!
 	tax_percentage: Float!
+}
+
+type Audit {
+	audit_id: ID!
+	order_id: ID!
+	created_on: DateTime!
+	message: String!
+	code: Int!
+	order: Order!
+}
+
+type Review {
+	review_id: ID!
+	customer_id: ID!
+	product_id: ID!
+	review: String!
+	rating: Int!
+	created_on: DateTime!
+	customer: Customer!
+	product: Product!
 }
 
 type Query {
@@ -120,4 +153,7 @@ type Query {
 	attributes: [Attribute!]!
 	attribute_values: [AttributeValue!]!
 	shopping_carts: [ShoppingCart!]!
+	orders: [Order!]!
+	shipping_regions: [ShippingRegion!]!
+	customers: [Customer!]!
 }
