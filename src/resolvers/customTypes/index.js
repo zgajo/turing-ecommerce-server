@@ -43,7 +43,7 @@ module.exports = {
 	},
 	DateTime: new GraphQLScalarType({
 		description: 'Date custom scalar type',
-		name: 'Date',
+		name: 'DateTime',
 		parseLiteral(ast) {
 			return formatDate(ast.value);
 		},
