@@ -4,5 +4,9 @@ module.exports = (sequelize, DataTypes) => {
 		name: { allowNull: false, type: DataTypes.STRING(100) },
 	});
 
+	Attribute.associate = models => {
+		Attribute.hasMany(models.AttributeValue, { as: 'AttributeValues', foreignKey: 'attribute_id' });
+	};
+
 	return Attribute;
 };

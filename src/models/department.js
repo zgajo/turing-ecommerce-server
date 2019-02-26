@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
 	});
 
 	Department.associate = models => {
-		// 1:m
 		Department.hasMany(models.Category, { as: 'Categories', foreignKey: 'department_id' });
 	};
 

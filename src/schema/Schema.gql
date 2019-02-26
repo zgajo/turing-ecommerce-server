@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Department {
 	department_id: ID!
 	name: String!
@@ -25,10 +27,97 @@ type Product {
 	thumbnail: String
 	display: Int!
 	categories: [Category!]!
+	product_attribute_values: [AttributeValue!]!
+}
+
+type Attribute {
+	attribute_id: ID!
+	name: String!
+	attribute_values: [AttributeValue!]!
+}
+
+type AttributeValue {
+	attribute_value_id: ID!
+	attribute_id: ID!
+	attribute: Attribute!
+	value: String!
+}
+
+type ShoppingCart {
+	item_id: ID!
+	cart_id: ID!
+	product_id: ID!
+	attributes: String!
+	quantity: Int!
+	buy_now: Boolean!
+	added_on: DateTime!
+}
+
+type Order {
+	order_id: ID!
+	total_amount: Float!
+	created_on: DateTime!
+	shipped_on: DateTime!
+	status: Int!
+	comments: String!
+	customer_id: ID!
+	auth_code: String!
+	reference: String!
+	shipping_id: ID!
+	tax_id: ID!
+}
+
+type OrderDetail {
+	item_id: ID!
+	order_id: ID!
+	product_id: ID!
+	attributes: String!
+	product_name: String!
+	quantity: Int!
+	unit_cost: Float!
+}
+
+type ShippingRegion {
+	shipping_region_id: ID!
+	shipping_region: String!
+}
+
+type Customer {
+	customer_id: ID!
+	name: String!
+	email: String!
+	password: String!
+	credit_card: String
+	address_1: String
+	address_2: String
+	city: String
+	region: String
+	postal_code: String
+	country: String
+	shipping_region_id: ID!
+	day_phone: String
+	eve_phone: String
+	mob_phone: String
+}
+
+type Shipping {
+	shipping_id: ID!
+	shipping_type: String!
+	shipping_cost: Float!
+	shipping_region_id: ID!
+}
+
+type Tax {
+	tax_id: ID!
+	tax_type: String!
+	tax_percentage: Float!
 }
 
 type Query {
 	departments: [Department!]!
 	categories: [Category!]!
 	products: [Product!]!
+	attributes: [Attribute!]!
+	attribute_values: [AttributeValue!]!
+	shopping_carts: [ShoppingCart!]!
 }
