@@ -157,3 +157,27 @@ type Query {
 	shipping_regions: [ShippingRegion!]!
 	customers: [Customer!]!
 }
+
+input SignupCustomerInput {
+	customer_id: ID!
+	name: String!
+	email: String!
+	password: String!
+	credit_card: String
+	address_1: String
+	address_2: String
+	city: String
+	region: String
+	postal_code: String
+	country: String
+	shipping_region_id: ID!
+	day_phone: String
+	eve_phone: String
+	mob_phone: String
+}
+
+type Mutation {
+	signupCustomerGoogle(googleAuthToken: String!): Boolean!
+	signupCustomerFacebook(facebookAuthToken: String!): Boolean!
+	signupCustomer(input: SignupCustomerInput!): Boolean!
+}

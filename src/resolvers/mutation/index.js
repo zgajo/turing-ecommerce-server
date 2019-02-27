@@ -1,3 +1,5 @@
 module.exports = {
-	Mutation: {},
+	signupCustomerGoogle: (/*_, args*/) => {
+		return true;
+	},
 };
