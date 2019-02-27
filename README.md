@@ -1,1 +1,1 @@
-# turing-ecommerce-server
+# ecommerce-server
