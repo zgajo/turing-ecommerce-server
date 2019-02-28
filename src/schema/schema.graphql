@@ -156,7 +156,7 @@ type Query {
 	orders: [Order!]!
 	shipping_regions: [ShippingRegion!]!
 	customers: [Customer!]!
-	category_products(where: CategoryProductWhereInput!): [Product!]!
+	category_products(where: CategoryProductWhereInput!, limit: Int, offset: Int): [Product!]!
 }
 
 type Mutation {
