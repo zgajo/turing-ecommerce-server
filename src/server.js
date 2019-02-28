@@ -8,7 +8,10 @@ const models = require('./models');
 const resolvers = require('./resolvers');
 const { permissions } = require('./permissions');
 
-const typeDefs = fs.readFileSync(__dirname + '/schema/Schema.gql', 'utf8');
+let typeDefs = '';
+fs.readdirSync(__dirname + '/schema').forEach(file => {
+	typeDefs += fs.readFileSync(__dirname + '/schema/' + file, 'utf8');
+});
 
 const server = new GraphQLServer({ context: { models }, permissions, resolvers, typeDefs });
 

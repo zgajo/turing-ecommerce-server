@@ -149,31 +149,14 @@ type Review {
 type Query {
 	departments: [Department!]!
 	categories: [Category!]!
-	products: [Product!]!
+	products(where: ProductWhereInput): [Product!]!
 	attributes: [Attribute!]!
 	attribute_values: [AttributeValue!]!
 	shopping_carts: [ShoppingCart!]!
 	orders: [Order!]!
 	shipping_regions: [ShippingRegion!]!
 	customers: [Customer!]!
-}
-
-input SignupCustomerInput {
-	customer_id: ID!
-	name: String!
-	email: String!
-	password: String!
-	credit_card: String
-	address_1: String
-	address_2: String
-	city: String
-	region: String
-	postal_code: String
-	country: String
-	shipping_region_id: ID!
-	day_phone: String
-	eve_phone: String
-	mob_phone: String
+	category_products(where: CategoryProductWhereInput!): [Product!]!
 }
 
 type Mutation {
