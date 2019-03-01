@@ -4,8 +4,8 @@ const { formatDate } = require('../../utils/globals');
 // TODO: use Dataloader for batching
 module.exports = {
 	Attribute: {
-		attribute_values: async ({ attribute_id }, _, { models }) =>
-			await models.AttributeValue.findAll({ where: { attribute_id } }),
+		attribute_values: async ({ attribute_id }, _, { batchFunctions, models }) =>
+			batchFunctions(models).attributeValuesBatch.load(attribute_id),
 	},
 	AttributeValue: {
 		attribute: async ({ attribute_id }, _, { models }) => await models.Attribute.findOne({ where: { attribute_id } }),
