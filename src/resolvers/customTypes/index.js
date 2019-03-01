@@ -78,8 +78,16 @@ module.exports = {
 			await models.OrderDetail.findAll({ where: { product_id } }),
 		product_attribute_values: async ({ product_id }, __, { models }) => {
 			return await models.AttributeValue.findAll({
-				include: [{ as: 'ProductAttributes', model: models.ProductAttribute, where: { product_id } }],
-				required: true,
+				include: [
+					{
+						as: 'AttributeValueProductAttributes',
+						attributes: [],
+						model: models.ProductAttribute,
+						where: {
+							product_id,
+						},
+					},
+				],
 			});
 		},
 		reviews: async ({ product_id }, __, { models }) => await models.Review.findAll({ where: { product_id } }),

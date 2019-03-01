@@ -4,5 +4,9 @@ module.exports = (sequelize, DataTypes) => {
 		product_id: { allowNull: false, primaryKey: true, type: DataTypes.INTEGER },
 	});
 
+	ProductAttribute.associate = models => {
+		ProductAttribute.belongsTo(models.Product, { as: 'ProductAttributeProducut', foreignKey: 'product_id' });
+	};
+
 	return ProductAttribute;
 };

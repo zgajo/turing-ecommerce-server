@@ -2,9 +2,26 @@ module.exports = {
 	attribute_values: async (_, __, { models }) => await models.AttributeValue.findAll(),
 	attributes: async (_, __, { models }) => await models.Attribute.findAll(),
 	categories: async (_, __, { models }) => await models.Category.findAll(),
-	category_products: async (_, { where, limit, offset }, { models }) => {
+	category_products: async (_, { where: { category_id, attribute_value_ids }, limit, offset }, { models }) => {
+		const include = [
+			{ as: 'ProductCategories', model: models.ProductCategory, required: true, where: { category_id } },
+		];
+
+		if (attribute_value_ids && attribute_value_ids.length) {
+			include.push({
+				as: 'ProductAttributes',
+				model: models.ProductAttribute,
+				required: true,
+				where: {
+					attribute_value_id: {
+						[models.op.in]: attribute_value_ids,
+					},
+				},
+			});
+		}
+
 		return await models.Product.findAll({
-			include: [{ as: 'ProductCategories', model: models.ProductCategory, where }],
+			include,
 			limit,
 			offset,
 			required: true,

@@ -8,6 +8,7 @@ input CategoryWhereInput {
 
 input CategoryProductWhereInput {
 	category_id: ID!
+	attribute_value_ids: [Int!]
 }
 
 input SignupCustomerInput {
