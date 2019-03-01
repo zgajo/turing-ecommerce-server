@@ -4,28 +4,20 @@ const { formatDate } = require('../../utils/globals');
 // TODO: use Dataloader for batching
 module.exports = {
 	Attribute: {
-		attribute_values: async ({ attribute_id }, _, { batchFunctions, models }) =>
+		attribute_values: ({ attribute_id }, _, { batchFunctions, models }) =>
 			batchFunctions(models).attributeValuesBatch.load(attribute_id),
 	},
 	AttributeValue: {
 		attribute: async ({ attribute_id }, _, { models }) => await models.Attribute.findOne({ where: { attribute_id } }),
-		product_attribute_values: async ({ attribute_value_id }, _, { models }) =>
-			await models.Product.findAll({
-				include: [{ as: 'ProductAttributes', model: models.ProductAttribute, where: { attribute_value_id } }],
-				required: true,
-			}),
+		product_attribute_values: ({ attribute_value_id }, _, { batchFunctions }) =>
+			batchFunctions.productAttributeValues.load(attribute_value_id),
 	},
 	Audit: {
 		order: async ({ order_id }, _, { models }) => await models.Orders.findOne({ where: { order_id } }),
 	},
 	Category: {
 		department: async category => await category.getDepartment(),
-		products: async ({ category_id }, __, { models }) => {
-			return await models.Product.findAll({
-				include: [{ as: 'ProductCategories', model: models.ProductCategory, where: { category_id } }],
-				required: true,
-			});
-		},
+		products: async ({ category_id }, __, { batchFunctions }) => batchFunctions.categoryProducts.load(category_id),
 	},
 	Customer: {
 		orders: async ({ customer_id }, __, { models }) =>
