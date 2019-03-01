@@ -3,5 +3,6 @@ package-lock.json
 build/
 .env
 yarn-error.log
+yarn.lock
 dist/
 product_images/

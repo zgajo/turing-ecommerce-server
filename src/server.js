@@ -9,6 +9,13 @@ const resolvers = require('./resolvers');
 const { permissions } = require('./permissions');
 const batchFunctions = require('./batch_functions');
 
+// if you'd like to select database 3, instead of 0 (default), call
+// client.select(3, function() { /* ... */ });
+
+// client.on('error', function(err) {
+// 	console.log('Error ' + err);
+// });
+
 let typeDefs = '';
 fs.readdirSync(__dirname + '/schema').forEach(file => {
 	typeDefs += fs.readFileSync(__dirname + '/schema/' + file, 'utf8');
