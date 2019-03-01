@@ -25,7 +25,13 @@ const capitalize = s => {
 	return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+// Async function to remove try catch in functions
+const asyncAction = promise => {
+	return promise.then(data => [null, data]).catch(error => [error]);
+};
+
 module.exports = {
+	asyncAction,
 	capitalize,
 	formatDate,
 };
