@@ -10,7 +10,7 @@ module.exports = {
 	AttributeValue: {
 		attribute: async ({ attribute_id }, _, { models }) => await models.Attribute.findOne({ where: { attribute_id } }),
 		product_attribute_values: ({ attribute_value_id }, _, { batchFunctions }) =>
-			batchFunctions.productAttributeValues.load(attribute_value_id),
+			batchFunctions.attributeValuesOfProduct.load(attribute_value_id),
 	},
 	Audit: {
 		order: async ({ order_id }, _, { models }) => await models.Orders.findOne({ where: { order_id } }),
@@ -47,9 +47,7 @@ module.exports = {
 		},
 	}),
 	Department: {
-		categories: async department => {
-			return await department.getCategories();
-		},
+		categories: ({ department_id }, _, { batchFunctions }) => batchFunctions.departmentCategories.load(department_id),
 	},
 	Order: {
 		audits: async ({ order_id }, _, { models }) => await models.Audit.findAll({ where: { order_id } }),
@@ -60,29 +58,11 @@ module.exports = {
 		product: async ({ product_id }, _, { models }) => await models.OrderDetail.findOne({ where: { product_id } }),
 	},
 	Product: {
-		categories: async ({ product_id }, __, { models }) => {
-			return await models.Category.findAll({
-				include: [{ as: 'CategoryProducts', model: models.ProductCategory, where: { product_id } }],
-				required: true,
-			});
-		},
-		order_details: async ({ product_id }, __, { models }) =>
-			await models.OrderDetail.findAll({ where: { product_id } }),
-		product_attribute_values: async ({ product_id }, __, { models }) => {
-			return await models.AttributeValue.findAll({
-				include: [
-					{
-						as: 'AttributeValueProductAttributes',
-						attributes: [],
-						model: models.ProductAttribute,
-						where: {
-							product_id,
-						},
-					},
-				],
-			});
-		},
-		reviews: async ({ product_id }, __, { models }) => await models.Review.findAll({ where: { product_id } }),
+		categories: ({ product_id }, __, { batchFunctions }) => batchFunctions.productCategories.load(product_id),
+		order_details: ({ product_id }, __, { batchFunctions }) => batchFunctions.productOrderDetails.load(product_id),
+		product_attribute_values: ({ product_id }, __, { batchFunctions }) =>
+			batchFunctions.productAttributeValues.load(product_id),
+		reviews: ({ product_id }, __, { batchFunctions }) => batchFunctions.productReviews.load(product_id),
 	},
 	Review: {
 		customer: async ({ customer_id }, __, { models }) => await models.Customer.findOne({ where: { customer_id } }),
