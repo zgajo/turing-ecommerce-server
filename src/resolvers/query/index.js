@@ -1,38 +1,41 @@
 const { asyncAction } = require('../../utils/globals');
-const { fetchCategoryProducts } = require('../../utils/product');
 
 module.exports = {
 	attribute_values: async (_, __, { models }) => await models.AttributeValue.findAll(),
 	attributes: async (_, __, { models }) => await models.Attribute.findAll(),
 	categories: async (_, __, { models }) => await models.Category.findAll(),
-	category_products: async (_, { where: { category_id, attribute_value_ids }, limit, offset }, { client, models }) => {
-		const [err, data] = await asyncAction(client.getAsync(`category_${category_id}_products`));
+	category_products: async (_, { where: { category_id, attribute_value_ids }, limit, offset }, { models }) => {
+		const include = [
+			{ as: 'ProductCategories', model: models.ProductCategory, required: true, where: { category_id } },
+		];
 
-		if (err) {
-			throw new Error('Redis error');
-		}
-
-		if (data) {
-			const products = JSON.parse(data);
-
-			return products;
-		} else {
-			const [err, products] = await fetchCategoryProducts({
-				attribute_value_ids,
-				category_id,
-				limit,
-				models,
-				offset,
+		if (attribute_value_ids && attribute_value_ids.length) {
+			include.push({
+				as: 'ProductAttributes',
+				model: models.ProductAttribute,
+				required: true,
+				where: {
+					attribute_value_id: {
+						[models.op.in]: attribute_value_ids,
+					},
+				},
 			});
-
-			if (err) {
-				throw new Error('Redis error');
-			}
-
-			client.set(`category_${category_id}_products`, JSON.stringify(products));
-
-			return products;
 		}
+
+		const [error, products] = await asyncAction(
+			models.Product.findAll({
+				include,
+				limit,
+				offset,
+				required: true,
+			}),
+		);
+
+		if (error) {
+			throw new Error('Error: Fetching category products');
+		}
+
+		return products;
 	},
 	customers: async (_, __, { models }) => await models.Customer.findAll(),
 	departments: async (_, __, { models }) => await models.Department.findAll(),

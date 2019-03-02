@@ -133,7 +133,6 @@ const productAttributeValues = async (product_ids, models) => {
 			include: [
 				{
 					as: 'AttributeValueProductAttributes',
-					attributes: [],
 					model: models.ProductAttribute,
 					where: { product_id: { [models.op.in]: product_ids } },
 				},
