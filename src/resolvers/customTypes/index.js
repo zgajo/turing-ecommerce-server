@@ -15,6 +15,10 @@ module.exports = {
 	Audit: {
 		order: async ({ order_id }, _, { models }) => await models.Orders.findOne({ where: { order_id } }),
 	},
+	// Need to add __resolveType for interface to remove warning
+	AuthPayload: {
+		__resolveType() {},
+	},
 	Category: {
 		department: async ({ department_id }, _, { models }) =>
 			await models.Department.findOne({ where: { department_id } }),

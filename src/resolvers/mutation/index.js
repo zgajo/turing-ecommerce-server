@@ -1,5 +1,5 @@
+const Signup = require('./signup');
+
 module.exports = {
-	signupCustomerGoogle: (/*_, args*/) => {
-		return true;
-	},
+	...Signup,
 };

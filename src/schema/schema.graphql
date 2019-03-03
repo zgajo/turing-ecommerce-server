@@ -146,6 +146,22 @@ type Review {
 	product: Product!
 }
 
+interface AuthPayload {
+	message: String
+	success: Boolean!
+}
+
+type ResolverResponse implements AuthPayload {
+	message: String
+	success: Boolean!
+}
+
+type LoginResponse implements AuthPayload {
+	message: String
+	success: Boolean!
+	token: String
+}
+
 type Query {
 	departments: [Department!]!
 	categories: [Category!]!
@@ -162,5 +178,6 @@ type Query {
 type Mutation {
 	signupCustomerGoogle(googleAuthToken: String!): Boolean!
 	signupCustomerFacebook(facebookAuthToken: String!): Boolean!
-	signupCustomer(input: SignupCustomerInput!): Boolean!
+	signupCustomer(input: SignupCustomerInput!): ResolverResponse!
+	signupCustomerConfirm(token: String!): ResolverResponse!
 }
