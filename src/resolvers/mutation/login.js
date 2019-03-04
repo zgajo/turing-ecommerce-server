@@ -1,10 +1,10 @@
-import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
-import { tokenCreationData } from '../../utils/token';
+const { compare } = require('bcrypt');
+const { sign } = require('jsonwebtoken');
+const { tokenCreationData } = require('../../utils/token');
 
 module.exports = {
 	async login(_, { email, password }, { models }) {
-		const customer = await models.Customer.findOne({ where: { email } });
+		const customer = await models.Customer.findOne({ raw: true, where: { email } });
 
 		if (!customer) {
 			// No customer for email
