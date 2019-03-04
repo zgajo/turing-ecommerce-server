@@ -180,4 +180,5 @@ type Mutation {
 	signupCustomerFacebook(facebookAuthToken: String!): Boolean!
 	signupCustomer(input: SignupCustomerInput!): ResolverResponse!
 	signupCustomerConfirm(token: String!): ResolverResponse!
+	login(email: String!, password: String!): LoginResponse!
 }

@@ -14,11 +14,15 @@ function getUser(context) {
 }
 
 function tokenCreationData(user) {
-	return {
-		id: user.id,
-		isAdmin: user.admin,
-		name: user.name,
-	};
+	return Object.keys(user).reduce((obj, key) => {
+		if (key === 'password') {
+			return obj;
+		}
+		return {
+			...obj,
+			[key]: user[key],
+		};
+	}, {});
 }
 
 module.exports = {

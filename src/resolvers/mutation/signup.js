@@ -1,5 +1,4 @@
-// const { hash } = require('bcrypt');
-// const { sign } = require('jsonwebtoken');
+const { hash } = require('bcrypt');
 const crypto = require('crypto');
 const { client } = require('../../utils/redis');
 
@@ -47,9 +46,7 @@ module.exports = {
 				`signup:token:${resetPasswordToken}`,
 				JSON.stringify({
 					...data,
-					// This should be hashed, but db has only 50 char length so currently store as plain text
-					// TODO: Set password varchar to 100
-					// password: await hash(password_confirm, 10),
+					password: await hash(password_confirm, 10),
 				}),
 				'EX',
 				3600,
@@ -78,6 +75,7 @@ module.exports = {
 				success: false,
 			};
 		}
+
 		const [, user] = await asyncAction(models.Customer.findOne({ where: { email: data.email } }));
 
 		if (user) {
