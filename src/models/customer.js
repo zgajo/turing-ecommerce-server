@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
 		eve_phone: DataTypes.STRING(100),
 		mob_phone: DataTypes.STRING(100),
 		name: { allowNull: false, type: DataTypes.STRING(50) },
-		password: { allowNull: false, type: DataTypes.STRING(100) },
+		password: { allowNull: false, type: DataTypes.STRING(50) },
 		postal_code: DataTypes.STRING(100),
 		region: DataTypes.STRING(100),
 		shipping_region_id: { allowNull: false, defaultValue: '1', type: DataTypes.INTEGER },
