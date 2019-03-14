@@ -24,39 +24,23 @@ jobs:
             echo "my artifact file" > /tmp/artifact-1;
             mkdir /tmp/artifacts;
             echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
+      - store_artifacts:
+          path: /tmp/artifact-1
+          destination: artifact-file
       - add_ssh_keys:
           fingerprints:
             - '8b:05:86:c4:a1:72:7c:84:35:b3:f5:64:23:f3:72:b7'
       - persist_to_workspace:
           root: ~/repo
           paths: .
-
-  deploy:
-    # <<: *defaults
-    machine:
-      enabled: true
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      - add_ssh_keys:
-          fingerprints:
-            - '8b:05:86:c4:a1:72:7c:84:35:b3:f5:64:23:f3:72:b7'
-      # - run:
-      #     name: 'Who is ssh user?'
-      #     command: echo $SSH_USER
       - run:
           name: Deploy Over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && exit;"
-            # scp -r -P $SSH_PORT /tmp/artifact-1 $SSH_USER@$SSH_HOST:/var/www/turing_ecommerce
+            # ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && exit;"
+            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT $CIRCLE_WORKING_DIRECTORY $SSH_USER@$SSH_HOST:/var/www/test
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
       - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
