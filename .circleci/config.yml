@@ -47,7 +47,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
+            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && exit;"
             # scp -r -P $SSH_PORT /tmp/artifact-1 $SSH_USER@$SSH_HOST:/var/www/turing_ecommerce
 workflows:
   version: 2
