@@ -1,5 +1,7 @@
 const { hash } = require('bcrypt');
 const crypto = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
+
 const { client } = require('../../utils/redis');
 
 const { sendNewUserMail } = require('../../utils/email');
@@ -12,7 +14,7 @@ module.exports = {
 			const { password_confirm, ...data } = input;
 			const { email, name, password } = data;
 
-			//1: check if user with same email already in db
+			//1: check if user with same email alnpmready in db
 			const userExists = await models.Customer.findOne({ where: { email } });
 
 			if (userExists) {
@@ -102,7 +104,53 @@ module.exports = {
 			};
 		}
 	},
-	signupCustomerGoogle: (/*_, args*/) => {
-		return true;
+	signupCustomerGoogle: async (_, { googleAuthToken }, { models }) => {
+		const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+		async function verify() {
+			const ticket = await client.verifyIdToken({
+				audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+				idToken: googleAuthToken,
+				// Or, if multiple clients access the backend:
+				//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+			});
+			const payload = ticket.getPayload();
+			// console.log(payload.aud === );
+			if (payload.aud === process.env.GOOGLE_CLIENT_ID) {
+				const { email, sub, email_verified, name } = payload;
+
+				if (!email_verified) {
+					return {
+						message: 'Google email is not verified by Google',
+						success: false,
+					};
+				}
+
+				//1: check if user with same email alnpmready in db
+				const userExists = await models.Customer.findOne({ where: { email } });
+
+				if (userExists) {
+					return {
+						message: 'User already exists',
+						success: false,
+					};
+				}
+
+				await models.Customer.create({
+					email,
+					google_id: sub,
+					method: 'google',
+					name,
+				});
+
+				return {
+					message: 'Account succesfully created',
+					success: true,
+				};
+			}
+		}
+
+		return verify()
+			.then(res => res)
+			.catch(err => err);
 	},
 };

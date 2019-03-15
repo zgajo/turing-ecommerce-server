@@ -176,7 +176,7 @@ type Query {
 }
 
 type Mutation {
-	signupCustomerGoogle(googleAuthToken: String!): Boolean!
+	signupCustomerGoogle(googleAuthToken: String!): ResolverResponse!
 	signupCustomerFacebook(facebookAuthToken: String!): Boolean!
 	signupCustomer(input: SignupCustomerInput!): ResolverResponse!
 	signupCustomerConfirm(token: String!): ResolverResponse!
