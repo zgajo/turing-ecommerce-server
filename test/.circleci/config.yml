@@ -38,18 +38,11 @@ jobs:
       # - run:
       #     command: |
       #       mkdir ~/repo/build_test
-
-      - run:
-          name: 'Zip project'
-          command: |
-            zip -r ecommerce.zip  ./. -x "./node_modules/*" "./product_images/*" *.git*;
-
       # Special step used to persist a temporary file to be used by another job in the workflow.
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - ecommerce.zip
-            # - . # Reuse all files and folders in workspace ~/repo (name of working directory)
+            - . # Reuse all files and folders in workspace ~/repo (name of working directory)
             # - src # Reuse only this folder
             # - build_test # Reuse only one folder
       # - run: ls -alF /tmp # Show all files inside folder
@@ -69,7 +62,7 @@ jobs:
           name: Deploy Over SSH
           command: |
             # ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
-            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo/ecommerce.zip $SSH_USER@$SSH_HOST:/var/www/test;
+            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo $SSH_USER@$SSH_HOST:/var/www/test;
             echo "It is success";
 workflows:
   version: 2

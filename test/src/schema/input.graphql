@@ -1,0 +1,30 @@
+input ProductWhereInput {
+	product_id: ID
+}
+
+input CategoryWhereInput {
+	category_id: ID
+}
+
+input CategoryProductWhereInput {
+	category_id: ID!
+	attribute_value_ids: [Int!]
+}
+
+input SignupCustomerInput {
+	name: String!
+	email: String!
+	password: String!
+	password_confirm: String!
+	shipping_region_id: ID!
+	credit_card: String
+	address_1: String
+	address_2: String
+	city: String
+	region: String
+	postal_code: String
+	country: String
+	day_phone: String
+	eve_phone: String
+	mob_phone: String
+}
