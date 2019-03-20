@@ -14,38 +14,56 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: echo "hello world" # run the `echo` command
-      - run: pwd
-      - run:
-          name: Creating Dummy Artifacts
-          command: |
-            echo "my artifact file" > /tmp/artifact-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
+      # - run:
+      #     name: "Run tests"
+      #     command: yarn test
+      # - run: pwd # Just pathname of current working direcory (~/repo)
+      # Create dummy files
+      # - run:
+      #     name: Creating Dummy Artifacts
+      #     command: |
+      #       echo "my artifact file" > /tmp/artifact-1;
+      #       mkdir /tmp/artifacts;
+      #       echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
+      # Save dummy files as artifacts
+      # - store_artifacts:
+      #     path: /tmp/artifact-1
+      #     destination: artifact-file
+      # Save arifact to reuse in workspace jobs
+      # - persist_to_workspace:
+      #     root: /tmp
+      #     paths:
+      #       - artifact-1
+      # Just for testing: Make folder so that later can be reused
+      # - run:
+      #     command: |
+      #       mkdir ~/repo/build_test
+      # Special step used to persist a temporary file to be used by another job in the workflow.
       - persist_to_workspace:
           root: ~/repo
-          paths: .
+          paths:
+            - . # Reuse all files and folders in workspace ~/repo (name of working directory)
+            # - src # Reuse only this folder
+            # - build_test # Reuse only one folder
+      # - run: ls -alF /tmp # Show all files inside folder
 
   deploy:
-    # <<: *defaults
-    machine:
-      enabled: true
+    <<: *defaults
     steps:
-      - checkout
       - attach_workspace:
           at: ~/repo
+          # at: /tmp #if pesisting /tmp folder
       - add_ssh_keys:
           fingerprints:
             - '8b:05:86:c4:a1:72:7c:84:35:b3:f5:64:23:f3:72:b7'
-      # - run:
-      #     name: 'Who is ssh user?'
-      #     command: echo $SSH_USER
+      - run: ls -alF ~/repo
       - run: ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts # add server ssh response to known hosts
-      - run:
+      - deploy:
           name: Deploy Over SSH
           command: |
             # ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
-            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT /tmp/artifact-1 $SSH_USER@$SSH_HOST:/var/www/test
+            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo $SSH_USER@$SSH_HOST:/var/www/test;
+            echo "It is success";
 workflows:
   version: 2
   build-and-deploy:
