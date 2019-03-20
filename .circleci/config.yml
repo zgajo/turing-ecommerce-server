@@ -41,6 +41,7 @@ jobs:
 
       - run:
           name: 'Zip project'
+          # recursively zip all files and folders, exclude node_modules etc...
           command: |
             zip -r ecommerce.zip  ./. -x "./node_modules/*" "./product_images/*" *.git*;
 
@@ -69,7 +70,8 @@ jobs:
           name: Deploy Over SSH
           command: |
             # ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
-            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo/ecommerce.zip $SSH_USER@$SSH_HOST:/var/www/test;
+            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo/ecommerce.zip $SSH_USER@$SSH_HOST:/var/www/turing_ecommerce;
+            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && yarn install && $PM2_LOCATION restart server && exit;"
             echo "It is success";
 workflows:
   version: 2
