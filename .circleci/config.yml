@@ -71,7 +71,7 @@ jobs:
           command: |
             # ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
             scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo/ecommerce.zip $SSH_USER@$SSH_HOST:/var/www/turing_ecommerce;
-            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && yarn install && $PM2_LOCATION restart server && exit;"
+            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && yarn install && $PM2_LOCATION restart all && exit;"
             echo "It is success";
 workflows:
   version: 2
