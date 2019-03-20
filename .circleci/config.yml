@@ -17,26 +17,21 @@ jobs:
       - run: echo "hello world" # run the `echo` command
       - run: pwd
       - run:
-          name: 'Who is ssh user?'
-          command: echo $SSH_USER
-      - run:
           name: Creating Dummy Artifacts
           command: |
             echo "my artifact file" > /tmp/artifact-1;
             mkdir /tmp/artifacts;
             echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
-      - add_ssh_keys:
-          fingerprints:
-            - '8b:05:86:c4:a1:72:7c:84:35:b3:f5:64:23:f3:72:b7'
       - persist_to_workspace:
           root: ~/repo
           paths: .
 
   deploy:
-    <<: *defaults
-    # machine:
-    #   enabled: true
+    # <<: *defaults
+    machine:
+      enabled: true
     steps:
+      - checkout
       - attach_workspace:
           at: ~/repo
       - add_ssh_keys:
@@ -45,11 +40,12 @@ jobs:
       # - run:
       #     name: 'Who is ssh user?'
       #     command: echo $SSH_USER
+      - run: ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts # add server ssh response to known hosts
       - run:
           name: Deploy Over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
-            # scp -r -P $SSH_PORT /tmp/artifact-1 $SSH_USER@$SSH_HOST:/var/www/test
+            # ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
+            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT /tmp/artifact-1 $SSH_USER@$SSH_HOST:/var/www/test
 workflows:
   version: 2
   build-and-deploy:
