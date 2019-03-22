@@ -14,6 +14,11 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: yarn install
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - commands_on_deploy.sh
       # - run:
       #     name: "Run tests"
       #     command: yarn test
@@ -38,21 +43,19 @@ jobs:
       # - run:
       #     command: |
       #       mkdir ~/repo/build_test
-
-      - run:
-          name: 'Zip project'
-          # recursively zip all files and folders, exclude node_modules etc...
-          command: |
-            zip -r ecommerce.zip  ./. -x "./node_modules/*" "./product_images/*" *.git*;
-
-      # Special step used to persist a temporary file to be used by another job in the workflow.
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - ecommerce.zip
-            # - . # Reuse all files and folders in workspace ~/repo (name of working directory)
-            # - src # Reuse only this folder
-            # - build_test # Reuse only one folder
+      # - run:
+      #     name: 'Zip project'
+      #     # recursively zip all files and folders, exclude node_modules etc...
+      #     command: |
+      #       zip -r ecommerce.zip  ./. -x "./node_modules/*" "./product_images/*" *.git*;
+      # # Special step used to persist a temporary file to be used by another job in the workflow.
+      # - persist_to_workspace:
+      #     root: ~/repo
+      #     paths:
+      #       - ecommerce.zip
+      #       # - . # Reuse all files and folders in workspace ~/repo (name of working directory)
+      #       # - src # Reuse only this folder
+      #       # - build_test # Reuse only one folder
       # - run: ls -alF /tmp # Show all files inside folder
 
   deploy:
@@ -64,14 +67,14 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '8b:05:86:c4:a1:72:7c:84:35:b3:f5:64:23:f3:72:b7'
-      - run: ls -alF ~/repo
+      # - run: ls -alF ~/repo
       - run: ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts # add server ssh response to known hosts
       - deploy:
           name: Deploy Over SSH
           command: |
             # ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && git pull && yarn install && $PM2_LOCATION restart server && exit;"
-            scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo/ecommerce.zip $SSH_USER@$SSH_HOST:/var/www/turing_ecommerce;
-            ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /var/www/turing_ecommerce && unzip -o ecommerce.zip && yarn install && $PM2_LOCATION restart all && rm ecommerce.zip && exit;"
+            # scp -oStrictHostKeyChecking=no -r -P $SSH_PORT ~/repo/ecommerce.zip $SSH_USER@$SSH_HOST:/var/www/turing_ecommerce;
+            cat ~/repo/commands_on_deploy.sh | ssh $SSH_USER@$SSH_HOST -p $SSH_PORT
 workflows:
   version: 2
   build-and-deploy:
